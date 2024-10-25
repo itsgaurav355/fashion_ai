@@ -1,7 +1,7 @@
 import 'package:fashion_ai/common/widgets/common_button.dart';
 import 'package:fashion_ai/common/widgets/common_dropdown.dart';
 import 'package:fashion_ai/common/widgets/common_text_field.dart';
-import 'package:fashion_ai/controllers/user_controller.dart';
+import 'package:fashion_ai/providers/user_provider.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,18 +19,34 @@ class _StyleInfoScreenState extends State<StyleInfoScreen> {
   final TextEditingController _sizeController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _budgetController = TextEditingController();
+  List<String> selectedPatterns = [];
+  List<String> patterns = [
+    "Checks",
+    "Stripes",
+    "Polka Dots",
+    "Florals",
+    "Animal Prints",
+    "Abstract Patterns",
+    "Houndstooth",
+    "Tartan",
+    "Camouflage",
+    "Paisley",
+    "Damask",
+    "Brocade",
+    "Tie-Dye",
+    "Chevron",
+    "Argyle"
+  ];
   String? _preferredStyle;
   String? _selectedBudget;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final userController =
-          Provider.of<UserController>(context, listen: false);
+      final userController = Provider.of<UserProvider>(context, listen: false);
       _preferredStyle = userController.preferredStyle;
       _selectedColor = userController.color;
       _patternController.text = userController.pattern;
-      _sizeController.text = userController.size;
       _brandController.text = userController.brand;
       _selectedBudget = userController.budget;
     });
@@ -78,37 +94,52 @@ class _StyleInfoScreenState extends State<StyleInfoScreen> {
                 "Color*",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 5),
               _colorPicker(),
-              const SizedBox(height: 5),
               const Text(
                 "Pattern*",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 5),
-              MyTextField(
-                controller: _patternController,
-                hintText: "e.g. Checks/Stripes",
+              const SizedBox(height: 10),
+              MyDropDownButton(
+                  hint: "Select Patterns you like",
+                  items: patterns,
+                  onChanged: (val) {
+                    if (val != null &&
+                        !selectedPatterns.contains(val.toString())) {
+                      setState(() {
+                        selectedPatterns.add(val.toString());
+                      });
+                    }
+                  }),
+              Wrap(
+                spacing: 10,
+                children: selectedPatterns
+                    .map(
+                      (e) => FilterChip(
+                        label: Text(e),
+                        selected: selectedPatterns.contains(e),
+                        onSelected: (value) {
+                          setState(() {
+                            if (value) {
+                              selectedPatterns.add(e);
+                            } else {
+                              selectedPatterns.remove(e);
+                            }
+                          });
+                        },
+                      ),
+                    )
+                    .toList(),
               ),
               const SizedBox(height: 5),
               const Text(
-                "Size*",
+                "Brands*",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 5),
-              MyTextField(
-                controller: _sizeController,
-                hintText: "e.g. L/M/S",
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                "Brand*",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 10),
               MyTextField(
                 controller: _brandController,
-                hintText: "e.g. Nike, Adidas",
+                hintText: "Brands name you like",
               ),
               const SizedBox(height: 5),
               const Text(
@@ -141,7 +172,7 @@ class _StyleInfoScreenState extends State<StyleInfoScreen> {
         ),
       ),
       bottomNavigationBar:
-          Consumer<UserController>(builder: (context, value, child) {
+          Consumer<UserProvider>(builder: (context, value, child) {
         return Padding(
           padding: const EdgeInsets.all(10),
           child: CommonButton(
@@ -151,8 +182,7 @@ class _StyleInfoScreenState extends State<StyleInfoScreen> {
             onPressed: () {
               //check if all fields are filled
               if (_preferredStyle == null ||
-                  _patternController.text.isEmpty ||
-                  _sizeController.text.isEmpty ||
+                  selectedPatterns.isEmpty ||
                   _brandController.text.isEmpty ||
                   _selectedBudget == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -165,8 +195,7 @@ class _StyleInfoScreenState extends State<StyleInfoScreen> {
               value.updateStyleInfo(
                 preferredStyle: _preferredStyle,
                 color: _selectedColor,
-                pattern: _patternController.text,
-                size: _sizeController.text,
+                pattern: selectedPatterns.join(", "),
                 brand: _brandController.text,
                 budget: _selectedBudget,
               );
@@ -181,7 +210,7 @@ class _StyleInfoScreenState extends State<StyleInfoScreen> {
 
   Widget _colorPicker() {
     return ListTile(
-      title: const Text('Choose a color'),
+      title: const Text('Choose your favorite color'),
       subtitle: Text(
         'Color: ${_selectedColor.toString()}',
         style: TextStyle(
@@ -221,7 +250,9 @@ class _StyleInfoScreenState extends State<StyleInfoScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Pick a color!'),
+          title: const Text(
+            'Choose your outfit favourite color!',
+          ),
           content: SingleChildScrollView(
             child: ColorPicker(
               color: tempColor,

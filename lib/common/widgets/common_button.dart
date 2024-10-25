@@ -5,6 +5,7 @@ class CommonButton extends StatelessWidget {
   final Color textColor;
   final Color buttonColor;
   final VoidCallback onPressed;
+  final double? fontSize;
   final double borderRadius;
 
   const CommonButton(
@@ -13,7 +14,8 @@ class CommonButton extends StatelessWidget {
       required this.textColor,
       required this.buttonColor,
       required this.onPressed,
-      required this.borderRadius});
+      required this.borderRadius,
+      this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +31,10 @@ class CommonButton extends StatelessWidget {
         ),
         child: Text(
           title,
+          textAlign: TextAlign.center,
           style: TextStyle(
             color: textColor,
-            fontSize: 16,
+            fontSize: fontSize ?? 16,
             fontWeight: FontWeight.bold,
           ),
         ),

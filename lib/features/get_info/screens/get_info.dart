@@ -1,5 +1,5 @@
 import 'package:easy_stepper/easy_stepper.dart';
-import 'package:fashion_ai/controllers/user_controller.dart';
+import 'package:fashion_ai/providers/user_provider.dart';
 import 'package:fashion_ai/features/get_info/widgets/fashion_info.dart';
 import 'package:fashion_ai/features/get_info/widgets/product_info.dart';
 import 'package:fashion_ai/features/get_info/widgets/style_info.dart';
@@ -19,7 +19,6 @@ class _GetInfoScreenState extends State<GetInfoScreen> {
     const UserInfo(),
     const StyleInfoScreen(),
     const ProductInfo(),
-    const FashionInfo(),
     const FashionInfo(),
   ];
   @override
@@ -42,7 +41,7 @@ class _GetInfoScreenState extends State<GetInfoScreen> {
         children: <Widget>[
           Expanded(
             flex: 1,
-            child: Consumer<UserController>(
+            child: Consumer<UserProvider>(
               builder: (context, value, child) {
                 return EasyStepper(
                   activeStep: value.activeStep,
@@ -65,7 +64,7 @@ class _GetInfoScreenState extends State<GetInfoScreen> {
                         ),
                       ),
                       customTitle: const Text(
-                        'Your details',
+                        'Your\ndetails',
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -78,7 +77,7 @@ class _GetInfoScreenState extends State<GetInfoScreen> {
                         ),
                       ),
                       customTitle: const Text(
-                        'Style details',
+                        'Style\ndetails',
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -91,7 +90,7 @@ class _GetInfoScreenState extends State<GetInfoScreen> {
                         ),
                       ),
                       customTitle: const Text(
-                        'Product details',
+                        'Product\ndetails',
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -104,20 +103,7 @@ class _GetInfoScreenState extends State<GetInfoScreen> {
                         ),
                       ),
                       customTitle: const Text(
-                        'Fashion details',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    EasyStep(
-                      customStep: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Opacity(
-                          opacity: value.activeStep >= 4 ? 1 : 0.3,
-                          child: Image.asset('assets/images/5.png'),
-                        ),
-                      ),
-                      customTitle: const Text(
-                        'F & R',
+                        'Fashion\ndetails',
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -129,9 +115,9 @@ class _GetInfoScreenState extends State<GetInfoScreen> {
             ),
           ),
           Expanded(
-              flex: 6,
-              child: Consumer<UserController>(builder: (context, value, child) {
-                if (value.activeStep == 5) {
+              flex: 5,
+              child: Consumer<UserProvider>(builder: (context, value, child) {
+                if (value.activeStep == 4) {
                   return const SizedBox();
                 }
                 return steps[value.activeStep];

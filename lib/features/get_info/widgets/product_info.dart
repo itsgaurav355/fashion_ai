@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:fashion_ai/common/widgets/common_button.dart';
 import 'package:fashion_ai/common/widgets/common_dropdown.dart';
-import 'package:fashion_ai/controllers/user_controller.dart';
+import 'package:fashion_ai/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -121,7 +121,7 @@ class _ProductInfoState extends State<ProductInfo> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5),
-                Consumer<UserController>(
+                Consumer<UserProvider>(
                   builder: (context, value, child) {
                     log(value.age.toString());
                     return MyDropDownButton(
@@ -197,7 +197,7 @@ class _ProductInfoState extends State<ProductInfo> {
             ),
           ),
         ),
-        bottomNavigationBar: Consumer<UserController>(
+        bottomNavigationBar: Consumer<UserProvider>(
           builder: (context, value, child) {
             return Padding(
               padding: const EdgeInsets.all(10),

@@ -20,38 +20,111 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           children: [
             Expanded(
               child: PageView(
+                allowImplicitScrolling: true,
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _scrollController,
+                onPageChanged: (context) {
+                  setState(() {});
+                },
                 children: [
-                  Center(
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      color: Colors.red,
-                      alignment: Alignment.center,
-                      child: const Text('Introduction'),
-                    ),
-                  ),
-                  Center(
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      color: Colors.yellow,
-                      alignment: Alignment.center,
-                      child: const Text('Overview'),
-                    ),
-                  ),
-                  Center(
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      color: Colors.green,
-                      alignment: Alignment.center,
-                      child: const Text(
-                        'How to get Started',
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          'assets/images/main1.jpg',
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                      ),
+                      const Text(
+                        'Welcome to Fashion AI',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Fashion AI is a virtual stylist that helps you choose the best outfit for any occasion.',
                         textAlign: TextAlign.center,
                       ),
-                    ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Let\'s get started!',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          'assets/images/main2.jpg',
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                      ),
+                      const Text(
+                        'Upload an Image',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Upload an image of the outfit you want to wear and get suggestions on how to improve it.',
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Let\'s get started!',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          'assets/images/main3.jpg',
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                      ),
+                      const Text(
+                        'How to get Started',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Upload an image of the outfit you want to wear and get suggestions on how to improve it.',
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Let\'s get started!',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

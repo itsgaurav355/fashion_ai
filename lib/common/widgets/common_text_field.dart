@@ -7,6 +7,8 @@ class MyTextField extends StatefulWidget {
   final IconData? icon;
   final Function? onChanged;
   final Color? borderColor;
+  final Icon? suffixIcon;
+  final Function? onSuffixIconPressed;
   final int? maxLines;
   final bool isEmail;
   final String hintText;
@@ -25,6 +27,8 @@ class MyTextField extends StatefulWidget {
     this.borderColor,
     this.maxLines,
     this.onChanged,
+    this.suffixIcon,
+    this.onSuffixIconPressed,
   });
 
   @override
@@ -44,7 +48,7 @@ class _MyTextFieldState extends State<MyTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      maxLines: widget.maxLines ?? 1,
+      maxLines: widget.maxLines,
       controller: widget.controller,
       inputFormatters: widget.inputFormatter != null
           ? [widget.inputFormatter!]
@@ -56,20 +60,16 @@ class _MyTextFieldState extends State<MyTextField> {
       cursorColor: Colors.black,
       decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.grey.withOpacity(.2),
+          fillColor: Colors.grey.withOpacity(.4),
           errorText: errorText,
-          suffixIcon: widget.obsecureText == true
+          suffixIcon: widget.suffixIcon != null
               ? IconButton(
                   onPressed: () {
-                    setState(() {
-                      isHidden = !isHidden;
-                    });
+                    if (widget.onSuffixIconPressed != null) {
+                      widget.onSuffixIconPressed!();
+                    }
                   },
-                  icon: Icon(
-                      isHidden == true
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Colors.blue),
+                  icon: widget.suffixIcon!,
                 )
               : null,
           focusedErrorBorder: OutlineInputBorder(
@@ -90,7 +90,7 @@ class _MyTextFieldState extends State<MyTextField> {
           ),
           labelText: widget.hintText,
           hintStyle: const TextStyle(color: Colors.grey),
-          labelStyle: const TextStyle(color: Colors.grey),
+          labelStyle: const TextStyle(color: Colors.black),
           prefixIcon: widget.icon != null
               ? Icon(
                   widget.icon,
@@ -110,9 +110,11 @@ class _MyTextFieldState extends State<MyTextField> {
             }
           } else if (widget.obsecureText == true && val.length < 6) {
             errorText = "Password must be at least 6 characters";
-          } else if (val.isEmpty) {
-            errorText = "This field is required";
-          } else if (widget.onChanged != null) {
+          }
+          // else if (val.isEmpty) {
+          //   errorText = "This field is required";
+          // }
+          else if (widget.onChanged != null) {
             widget.onChanged!(val);
           } else {
             errorText = null;
