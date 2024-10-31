@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -68,5 +70,12 @@ class Utils {
     final File image = File(imagePath);
     await image.delete();
   }
-  
+
+  static void showSnackBar(BuildContext context, String s) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(s),
+      ),
+    );
+  }
 }

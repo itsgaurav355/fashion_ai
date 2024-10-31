@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fashion_ai/common/widgets/utils.dart';
 import 'package:fashion_ai/features/home/services/home_services.dart';
+import 'package:fashion_ai/models/response.dart';
 import 'package:fashion_ai/models/stylist.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,8 @@ class UserProvider extends ChangeNotifier {
   String _pattern = '';
   String data = '';
   HomeServices homeServices = HomeServices();
+  List<RecommendedProducts> recommendedProducts = [];
+  List<String> reusableProducts = [];
 
   String _brand = '';
   String _budget = '';
@@ -62,6 +65,18 @@ class UserProvider extends ChangeNotifier {
     _password = '';
     _age = 10;
     _activeStep = 0;
+  }
+
+  void setRecommendedProducts(List<RecommendedProducts> products) {
+    recommendedProducts.clear();
+    recommendedProducts = products;
+    notifyListeners();
+  }
+
+  void setReusableProducts(List<String> products) {
+    reusableProducts.clear();
+    reusableProducts = products;
+    notifyListeners();
   }
 
   void incrementStep() {

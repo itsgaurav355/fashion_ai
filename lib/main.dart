@@ -1,3 +1,4 @@
+import 'package:fashion_ai/features/add_products/screens/add_product.dart';
 import 'package:fashion_ai/features/home/screens/bottom_natigation.dart';
 import 'package:fashion_ai/providers/user_provider.dart';
 import 'package:fashion_ai/features/get_info/screens/get_info.dart';
@@ -42,6 +43,17 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'Fashion AI',
         theme: ThemeData(
+          navigationBarTheme: const NavigationBarThemeData(
+            backgroundColor: Colors.black,
+            indicatorColor: Colors.white,
+            indicatorShape: CircleBorder(),
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            labelTextStyle: WidgetStatePropertyAll(TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            )),
+          ),
           primarySwatch: Colors.blue,
         ),
         home:
@@ -51,6 +63,7 @@ class _MyAppState extends State<MyApp> {
           '/onboarding': (context) => const OnBoardingScreen(),
           '/get-info': (context) => const GetInfoScreen(),
           '/home': (context) => const MyBottomNavigation(),
+          '/add-product': (context) => const AddProduct(),
         },
       ),
     );

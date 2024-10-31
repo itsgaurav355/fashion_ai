@@ -12,8 +12,11 @@ class MyTextField extends StatefulWidget {
   final int? maxLines;
   final bool isEmail;
   final String hintText;
+  final Color? textColor;
   final TextInputFormatter? inputFormatter;
   final bool? obsecureText;
+  final bool? isDisabled;
+  final double? borderRadius;
 
   const MyTextField({
     super.key,
@@ -29,6 +32,9 @@ class MyTextField extends StatefulWidget {
     this.onChanged,
     this.suffixIcon,
     this.onSuffixIconPressed,
+    this.textColor,
+    this.borderRadius,
+    this.isDisabled,
   });
 
   @override
@@ -48,14 +54,16 @@ class _MyTextFieldState extends State<MyTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: widget.isDisabled != null ? !widget.isDisabled! : true,
       maxLines: widget.maxLines,
       controller: widget.controller,
       inputFormatters: widget.inputFormatter != null
           ? [widget.inputFormatter!]
           : [FilteringTextInputFormatter.deny(RegExp(r''))],
       mouseCursor: SystemMouseCursors.allScroll,
-      style:
-          const TextStyle(color: Colors.black, decoration: TextDecoration.none),
+      style: TextStyle(
+          color: widget.textColor ?? Colors.black,
+          decoration: TextDecoration.none),
       obscureText: isHidden,
       cursorColor: Colors.black,
       decoration: InputDecoration(
@@ -71,24 +79,27 @@ class _MyTextFieldState extends State<MyTextField> {
                   },
                   icon: widget.suffixIcon!,
                 )
-              : null,
+              : widget.isDisabled != null && widget.isDisabled!
+                  ? const Icon(Icons.stop_circle)
+                  : null,
           focusedErrorBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.red, width: 1),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.black),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.black),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.red, width: 1),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
           ),
-          labelText: widget.hintText,
+          // labelText: widget.hintText,
+          hintText: widget.hintText,
           hintStyle: const TextStyle(color: Colors.grey),
           labelStyle: const TextStyle(color: Colors.black),
           prefixIcon: widget.icon != null
