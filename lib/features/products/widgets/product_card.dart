@@ -27,7 +27,7 @@ class ProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Hero(
-              tag: "product${metaData.name}",
+              tag: "myproduct/${metaData.name!}",
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(

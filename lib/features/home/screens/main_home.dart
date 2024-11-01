@@ -1,6 +1,9 @@
 import 'dart:developer';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:fashion_ai/common/widgets/common_text_field.dart';
+import 'package:fashion_ai/constants/constants.dart';
+import 'package:fashion_ai/features/home/screens/product_details.dart';
 import 'package:fashion_ai/features/home/services/home_services.dart';
 import 'package:fashion_ai/features/home/widgets/message_card.dart';
 import 'package:fashion_ai/localdb/local_db.dart';
@@ -27,11 +30,7 @@ class _MainHomeState extends State<MainHome> {
   List<RecommendedProducts> products = [];
   String error = '';
   HomeServices homeServices = HomeServices();
-  List<String> userImage = [
-    // "http://192.168.1.104:5000/uploads/1729706773175.jpg",
-    // "http://192.168.1.104:5000/uploads/1729891570578.jpg",
-    // "http://192.168.1.104:5000/uploads/1729893742308.jpg",
-  ];
+  List<ReusableProducts> userImage = [];
   String? data;
   String userName = 'itsgaurav355';
 
@@ -43,16 +42,21 @@ class _MainHomeState extends State<MainHome> {
       userProvider.getData();
       data = userProvider.data;
       products = userProvider.recommendedProducts;
+      userImage = userProvider.reusableProducts;
       _scrollToBottom();
-
-      // userImage = userProvider.reusableProducts;
+      log(userImage.length.toString());
     });
     super.initState();
   }
 
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 30),
+        curve: Curves.easeInCubic,
+      );
+      // _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     }
   }
 
@@ -98,17 +102,11 @@ class _MainHomeState extends State<MainHome> {
     var user = Provider.of<UserProvider>(context, listen: false);
     Response response =
         await homeServices.aiPost(userName, data.toString(), message.query);
-    // products = response['recommended_products']
-    //     .map<RecommendateProduct>(
-    //         (product) => RecommendateProduct.fromJson(product))
-    //     .toList();
-    // var images = response['reusable_products'] as List;
     products = response.recommendedProducts ?? [];
-    var images = response.reusableProducts ?? [];
-    log(images.toString());
-    // for (var image in images) {
-    //   userImage.add(image['image_path']);
-    // }
+    log("Recommended: ${response.reusableProducts.toString()}");
+    userImage = response.reusableProducts ?? [];
+    log("Images length: ${userImage.length.toString()}");
+
     user.setRecommendedProducts(products);
     user.setReusableProducts(userImage);
     Message res = Message(
@@ -137,30 +135,100 @@ class _MainHomeState extends State<MainHome> {
         ),
         actions: [
           IconButton(
-              icon: const Icon(
-                Icons.refresh,
-                color: Colors.white,
-              ),
-              onPressed: fetchAllMessages)
+            icon: const Icon(
+              Icons.refresh,
+              color: Colors.white,
+            ),
+            onPressed: fetchAllMessages,
+          ),
+          IconButton(
+            onPressed: () {
+              _scrollToBottom();
+              // setState(() {});
+            },
+            icon: const Icon(
+              Icons.arrow_downward,
+              color: Colors.white,
+            ),
+          )
         ],
       ),
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              ListView.builder(
-                controller: _scrollController,
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  log(messages[index].toString());
-                  return MessageCard(message: messages[index]);
-                },
-              ),
-              if (userImage.isNotEmpty)
+              messages.isNotEmpty
+                  ? ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        return MessageCard(
+                          message: messages[index],
+                          isLastMessage: index == messages.length - 1,
+                        );
+                      },
+                    )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      height: MediaQuery.of(context).size.height * .8,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                'assets/images/ai.png',
+                                height: 200,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            AnimatedTextKit(
+                              animatedTexts: [
+                                TyperAnimatedText(
+                                  'How can I help you sir?',
+                                  textStyle: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                TyperAnimatedText(
+                                  'You can ask me anything about fashion styles!',
+                                  textAlign: TextAlign.center,
+                                  textStyle: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                TyperAnimatedText(
+                                  'E.g. "What should I wear for a party?"',
+                                  textAlign: TextAlign.center,
+                                  textStyle: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                TyperAnimatedText(
+                                  "Let's get started!",
+                                  textAlign: TextAlign.center,
+                                  textStyle: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+              if (userImage.isNotEmpty && isLoading == false)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -182,17 +250,20 @@ class _MainHomeState extends State<MainHome> {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                userImage[index],
-                                fit: BoxFit.cover,
-                                height: 100,
+                          child: GestureDetector(
+                            onLongPress: () {},
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  "${ApiUrl.baseUrl}${userImage[index].imagePath.toString()}",
+                                  fit: BoxFit.cover,
+                                  height: 100,
+                                ),
                               ),
                             ),
                           ),
@@ -214,7 +285,7 @@ class _MainHomeState extends State<MainHome> {
                     const SizedBox(height: 10),
                     GridView.builder(
                       shrinkWrap: true,
-                      itemCount: products.length,
+                      itemCount: messages.length > 3 ? 3 : messages.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
@@ -232,9 +303,27 @@ class _MainHomeState extends State<MainHome> {
                               children: [
                                 Expanded(
                                   flex: 3,
-                                  child: Image.network(
-                                    "http://192.168.1.104:5000/${products[index].imagePath}",
-                                    fit: BoxFit.cover,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProductDetails(
+                                            product: products[index],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Hero(
+                                      tag: products[index].imagePath.toString(),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          "http://192.168.1.104:5000/${products[index].imagePath}",
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -261,28 +350,25 @@ class _MainHomeState extends State<MainHome> {
                     ),
                   ],
                 )
-              else if (error.isNotEmpty)
-                Text(error)
-              else
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: MyTextField(
-                      isDisabled: isLoading,
-                      borderRadius: 30,
-                      textColor: Colors.white,
-                      controller: queryController,
-                      hintText: "How can I help you?",
-                      suffixIcon: const Icon(
-                        Icons.send,
-                        color: Colors.black,
-                      ),
-                      onSuffixIconPressed: askToAi,
-                    ),
-                  ),
-                )
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: MyTextField(
+            isDisabled: isLoading,
+            borderRadius: 30,
+            textColor: Colors.white,
+            controller: queryController,
+            hintText: "How can I help you?",
+            suffixIcon: const Icon(
+              Icons.send,
+              color: Colors.black,
+            ),
+            onSuffixIconPressed: askToAi,
           ),
         ),
       ),

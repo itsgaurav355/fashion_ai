@@ -3,7 +3,7 @@ class Response {
   List<RecommendedProducts>? recommendedProducts;
   List<ReusableProducts>? reusableProducts;
 
-  Response({this.answer, this.recommendedProducts, this.reusableProducts});
+  Response({answer, recommendedProducts, reusableProducts});
 
   Response.fromJson(Map<String, dynamic> json) {
     answer = json['answer'];
@@ -42,8 +42,7 @@ class RecommendedProducts {
   String? name;
   double? price;
 
-  RecommendedProducts(
-      {this.description, this.imagePath, this.name, this.price});
+  RecommendedProducts({description, imagePath, name, price});
 
   RecommendedProducts.fromJson(Map<String, dynamic> json) {
     description = json['description'];
@@ -63,20 +62,20 @@ class RecommendedProducts {
 }
 
 class ReusableProducts {
-  String? imagePath;
   String? category;
+  String? imagePath;
 
-  ReusableProducts({this.imagePath, this.category});
+  ReusableProducts({category, imagePath});
 
   ReusableProducts.fromJson(Map<String, dynamic> json) {
-    imagePath = json['image_path'];
     category = json['category'];
+    imagePath = json['image_path'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['image_path'] = imagePath;
     data['category'] = category;
+    data['image_path'] = imagePath;
     return data;
   }
 }

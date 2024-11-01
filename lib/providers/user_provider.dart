@@ -25,7 +25,7 @@ class UserProvider extends ChangeNotifier {
   String data = '';
   HomeServices homeServices = HomeServices();
   List<RecommendedProducts> recommendedProducts = [];
-  List<String> reusableProducts = [];
+  List<ReusableProducts> reusableProducts = [];
 
   String _brand = '';
   String _budget = '';
@@ -73,7 +73,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setReusableProducts(List<String> products) {
+  void setReusableProducts(List<ReusableProducts> products) {
     reusableProducts.clear();
     reusableProducts = products;
     notifyListeners();

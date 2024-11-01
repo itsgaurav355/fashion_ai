@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:fashion_ai/features/add_products/services/product_services.dart';
+import 'package:fashion_ai/features/products/screen/shop_product_details.dart';
 import 'package:fashion_ai/features/products/widgets/product_card.dart';
 import 'package:fashion_ai/models/products.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,18 @@ class _ProductScreenState extends State<ProductScreen> {
         itemCount: products.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          return ProductCard(metaData: products[index].metadata!);
+          return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShopProductDetails(
+                      product: products[index],
+                    ),
+                  ),
+                );
+              },
+              child: ProductCard(metaData: products[index].metadata!));
         },
       ),
     );

@@ -70,7 +70,9 @@ class _MyTextFieldState extends State<MyTextField> {
           filled: true,
           fillColor: Colors.grey.withOpacity(.4),
           errorText: errorText,
-          suffixIcon: widget.suffixIcon != null
+          suffixIcon: widget.isDisabled != null &&
+                  !widget.isDisabled! &&
+                  widget.suffixIcon != null
               ? IconButton(
                   onPressed: () {
                     if (widget.onSuffixIconPressed != null) {
@@ -80,7 +82,10 @@ class _MyTextFieldState extends State<MyTextField> {
                   icon: widget.suffixIcon!,
                 )
               : widget.isDisabled != null && widget.isDisabled!
-                  ? const Icon(Icons.stop_circle)
+                  ? const Icon(
+                      Icons.stop_circle,
+                      color: Colors.grey,
+                    )
                   : null,
           focusedErrorBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.red, width: 1),
@@ -92,6 +97,10 @@ class _MyTextFieldState extends State<MyTextField> {
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.black),
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.grey),
             borderRadius: BorderRadius.circular(widget.borderRadius ?? 10),
           ),
           errorBorder: OutlineInputBorder(
